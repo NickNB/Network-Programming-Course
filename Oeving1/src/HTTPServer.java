@@ -5,7 +5,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class HTTPServer {
     public static void main(String[] args) throws IOException {
-        ServerSocket ss = new ServerSocket(5000);
+        ServerSocket ss = new ServerSocket(80);
         LinkedBlockingDeque<Socket> sockets = new LinkedBlockingDeque<>();
 
         while(true) {
@@ -28,20 +28,18 @@ public class HTTPServer {
         BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
         PrintWriter writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream()), true);
 
-        String response =
-                "HTTP/1.0 200 OK\n" +
-                "Content-Type: text/html; charset=utf-8\n" +
-                "\n" +
-                "<HTML><BODY>" +
-                "<h1>Hei fra serveren. Her er headeren du sendte:</h1>\n" +
-                "<UL>\n";
+        StringBuilder response =
+                new StringBuilder("HTTP/1.0 200 OK\n" +
+                        "Content-Type: text/html; charset=utf-8\n" +
+                        "\n" +
+                        "<HTML><BODY>" +
+                        "<h1>Hei fra serveren. Her er headeren du sendte:</h1>\n" +
+                        "<UL>\n");
         String line;
         while((line = reader.readLine()) != null && !(line.contentEquals(""))) {
-            response += "<LI>" + line + "</LI>\n";
+            response.append("<LI>").append(line).append("</LI>\n");
         }
-        response +=
-                "</UL>\n" +
-                "</BODY></HTML>\n";
+        response.append("</UL>\n" + "</BODY></HTML>\n");
         writer.println(response);
 
         writer.close();

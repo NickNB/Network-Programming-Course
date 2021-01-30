@@ -26,6 +26,7 @@ public class Klient {
 
         in.close();
         writer.close();
+        reader.close();
         s.close();
         System.out.println("exiting");
     }

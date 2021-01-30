@@ -12,9 +12,7 @@ public class Server {
             sockets.add(ss.accept());
             new Thread(() -> {
                 Socket s = sockets.poll();
-
                 System.out.println("connection!");
-
                 try {
                     handleInput(s);
                 } catch (IOException e) {
@@ -36,7 +34,9 @@ public class Server {
             writer.println(calculate(line.split(" ")));
         }
         writer.close();
+        reader.close();
         s.close();
+        System.out.println("Socket closed");
         if(line != null && line.contentEquals("exit!")) System.exit(0);
     }
 
