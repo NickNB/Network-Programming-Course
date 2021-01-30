@@ -52,13 +52,10 @@ public class Server {
             return "Could not do the calculation because one of the numbers was invalid";
         }
 
-        switch(calc[1]) {
-            case "+":
-                return "Answer: " + (num1 + num2);
-            case "-":
-                return "Answer: " + (num1 - num2);
-            default:
-                return "Could not do the calculation because the operator is invalid";
-        }
+        return switch (calc[1]) {
+            case "+" -> "Answer: " + (num1 + num2);
+            case "-" -> "Answer: " + (num1 - num2);
+            default -> "Could not do the calculation because the operator is invalid";
+        };
     }
 }

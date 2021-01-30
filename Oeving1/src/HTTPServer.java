@@ -39,9 +39,11 @@ public class HTTPServer {
         while((line = reader.readLine()) != null && !(line.contentEquals(""))) {
             response += "<LI>" + line + "</LI>\n";
         }
-        response += "</UL>\n" +
+        response +=
+                "</UL>\n" +
                 "</BODY></HTML>\n";
         writer.println(response);
+
         writer.close();
         s.close();
     }
