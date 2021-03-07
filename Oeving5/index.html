@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Oeving 5</title>
+</head>
+<body>
+<textarea id="input" name="in" rows="4" cols="50"></textarea><br>
+<button id="commit" onclick="sendCode()">Compile and run</button>
+<p id="output"></p>
+
+<script>
+    async function sendCode() {
+        let obj = {input: document.getElementById("input").value}
+        console.log(obj.input);
+        fetch("http://localhost:9090/commit", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        }).then((res) => res.json()).then(data => {
+            console.log(data.stdout);
+            document.getElementById("output").innerHTML = data.stdout;
+        });
+    }
+</script>
+</body>
+</html> 
