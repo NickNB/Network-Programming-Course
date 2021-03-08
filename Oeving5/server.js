@@ -12,7 +12,6 @@ app.get('/', function (req, res) {
 });
 
 app.post('/commit', (req, res) =>{
-    //console.log(req.body["input"]);
     let code = req.body["input"];
     fs.writeFileSync('context/main.cpp', code);
     exec("docker build \"./context/\" -t gcc", () => {
@@ -26,6 +25,18 @@ app.post('/commit', (req, res) =>{
 const server = app.listen(9090, () => {
     console.log('listening on port %s...', server.address().port);
 });
+
+if(!fs.existsSync('./context')) {
+    fs.mkdirSync('./context');
+
+    fs.writeFileSync('./context/Dockerfile',
+        'FROM gcc:9.3.0\n' +
+        'COPY main.cpp /\n' +
+        'RUN g++ -o main main.cpp\n' +
+        'CMD ["./main"]');
+
+    fs.writeFileSync('./context/main.cpp', '');
+}
 
 function getIndexFile() {
     return fs.readFileSync("index.html", "utf8");
