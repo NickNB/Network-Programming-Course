@@ -13,7 +13,7 @@ class WebSocketServer {
                     let webSocket = this.getWebSocket(connection);
                     this.broadcastMessage(webSocket, readFrame(connection, data));
                 } else {
-                    this.webSockets.push(new WebSocket(connection));
+                    this.webSockets.push(new WebSocket(connection, this.webSockets.length));
                     handshake(connection, data.toString());
                 }
             });
@@ -58,8 +58,9 @@ class WebSocketServer {
 }
 
 class WebSocket {
-    constructor(connection) {
+    constructor(connection, id) {
         this.connection = connection;
+        this.id = id;
     }
 
     sendMessage(message) {
@@ -84,6 +85,10 @@ class WebSocket {
         buffer.writeUInt8(0b10000001, 0);
         this.connection.write(buffer);
     }
+
+    getId() {
+        return this.id;
+    }
 }
 
 function readFrame(connection, data) {
@@ -106,11 +111,11 @@ function readFrame(connection, data) {
 }
 
 function handshake(connection, message) {
-    if(getHeaderValue('Connection', message) !== 'Upgrade') {
+    if(!getHeaderValue('Connection', message).includes('Upgrade')) {
         connection.end('HTTP/1.1 400 Bad Request');
         return;
     }
-    if(getHeaderValue('Upgrade', message) !== 'websocket') {
+    if(!getHeaderValue('Upgrade', message).includes('websocket')) {
         connection.end('HTTP/1.1 400 Bad Request');
         return;
     }
